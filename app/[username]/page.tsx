@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ProfileLinks from './ProfileLinks'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 type Props = { params: Promise<{ username: string }> }
 
@@ -47,7 +48,7 @@ export default async function ProfilePage({ params }: Props) {
         {/* Avatar */}
         <div className="flex flex-col items-center gap-3 text-center">
           {profile.avatar_url ? (
-            <img
+            <Image
               src={profile.avatar_url}
               alt={profile.display_name ?? username}
               className="w-20 h-20 rounded-full object-cover"

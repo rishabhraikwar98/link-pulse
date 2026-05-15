@@ -1,5 +1,6 @@
 'use client'
 import { createClient } from '@/lib/supabase/client'
+import { detectLinkType, getLinkIcon, getLinkColor } from '@/lib/linkIcons'
 
 type Link = { id: string; title: string; url: string }
 
@@ -27,19 +28,26 @@ export default function ProfileLinks({ links }: { links: Link[] }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {links.map((link) => (
-        <a
-          key={link.id}
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => recordClick(link.id)}
-          className="w-full rounded-xl border px-5 py-4 text-center text-sm font-medium
-                     transition-colors hover:bg-accent hover:text-accent-foreground"
-        >
-          {link.title}
-        </a>
-      ))}
+      {links.map((link) => {
+        const linkType = detectLinkType(link.url)
+        const IconComponent = getLinkIcon(linkType)
+        const iconColor = getLinkColor(linkType)
+
+        return (
+          <a
+            key={link.id}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => recordClick(link.id)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-4 text-sm font-medium
+                       transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            <IconComponent className={`h-5 w-5 ${iconColor}`} />
+            <span>{link.title}</span>
+          </a>
+        )
+      })}
     </div>
   )
 }

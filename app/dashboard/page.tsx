@@ -16,12 +16,11 @@ export default async function DashboardPage() {
     .eq('id', userId)
     .single()
 
-  if (!profile) redirect('/onboarding')
 
   const { data: links } = await supabase
     .from('links')
     .select('id, title, url, is_active, sort_order')
-    .eq('profile_id', profile.id)
+    .eq('profile_id', profile?.id)
     .order('sort_order', { ascending: true })
 
   return (
@@ -29,7 +28,7 @@ export default async function DashboardPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-medium">Your links</h1>
         <a
-          href={`/${profile.username}`}
+          href={`/${profile?.username}`}
           target="_blank"
           className="text-sm text-muted-foreground hover:underline"
         >

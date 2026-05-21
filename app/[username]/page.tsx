@@ -51,6 +51,9 @@ export default async function ProfilePage({ params }: Props) {
             <Image
               src={profile.avatar_url}
               alt={profile.display_name ?? username}
+              width={200}
+              height={200}
+              loading="eager"
               className="w-20 h-20 rounded-full object-cover"
             />
           ) : (

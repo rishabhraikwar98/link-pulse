@@ -34,7 +34,7 @@ export async function completeOnboarding(
   })
 
   if (!parsed.success) {
-    return { fieldErrors: parsed.error.flatten().fieldErrors }
+    return { fieldErrors: z.flattenError(parsed.error).fieldErrors }
   }
 
   const { username, display_name } = parsed.data

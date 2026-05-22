@@ -61,3 +61,29 @@ export async function deleteLink(linkId: string) {
   await supabase.from('links').delete().eq('id', linkId)
   revalidatePath('/dashboard')
 }
+
+export async function reorderLinks(orderedIds: string[]): Promise<void> {
+  const supabase = await createClient()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (userError || !user) return
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.id)
+    .single()
+  if (!profile) return
+
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      supabase
+        .from('links')
+        .update({ sort_order: index })
+        .eq('id', id)
+        .eq('profile_id', profile.id)
+    )
+  )
+
+  revalidatePath('/dashboard')
+  revalidatePath('/[username]', 'page')
+}

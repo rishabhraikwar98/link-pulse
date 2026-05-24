@@ -6,6 +6,7 @@ const links = [
   { href: '/dashboard', label: 'Links' },
   { href: '/dashboard/analytics', label: 'Analytics' },
   { href: '/dashboard/settings', label: 'Settings' },
+  { href: '/dashboard/qr', label: 'QR Code' },
 ]
 
 export default function DashboardNav() {

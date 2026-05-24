@@ -25,8 +25,8 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-medium">Your links</h1>
+      <div className="flex items-center justify-between my-6">
+        <h1 className="text-xl font-medium">Your Links</h1>
         <a
           href={`/${profile?.username}`}
           target="_blank"

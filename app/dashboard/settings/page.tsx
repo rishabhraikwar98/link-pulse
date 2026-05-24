@@ -16,9 +16,9 @@ export default async function SettingsPage() {
   if (!profile) redirect('/onboarding')
 
   return (
-    <div className="max-w-xl mx-auto py-12 px-4">
+    <>
       <h1 className="text-xl font-medium mb-8">Profile settings</h1>
       <ProfileForm profile={profile} />
-    </div>
+    </>
   )
 }

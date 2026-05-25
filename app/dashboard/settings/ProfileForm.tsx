@@ -136,7 +136,7 @@ export default function ProfileForm({ profile }: { profile: Profile }) {
         {state.error && <p className="text-sm text-destructive">{state.error}</p>}
         {state.success && <p className="text-sm text-green-600">Profile updated.</p>}
 
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" size="default" disabled={pending}>
           {pending ? 'Saving…' : 'Save changes'}
         </Button>
       </form>

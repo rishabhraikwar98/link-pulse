@@ -1,37 +1,46 @@
-'use client'
-import { createClient } from '@/lib/supabase/client'
-import { detectLinkType, getLinkIcon, getLinkColor } from '@/lib/linkIcons'
-
-type Link = { id: string; title: string; url: string }
+"use client";
+import { createClient } from "@/lib/supabase/client";
+import { detectLinkType, getLinkIcon, getLinkColor } from "@/lib/linkIcons";
+import type { Theme } from "@/lib/types/theme";
+type Link = { id: string; title: string; url: string };
 
 function getDeviceType(): string {
-  return /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+  return /Mobi|Android/i.test(navigator.userAgent) ? "mobile" : "desktop";
 }
 
 async function recordClick(linkId: string) {
-  const supabase = createClient()
-  await supabase.from('clicks').insert({
+  const supabase = createClient();
+  await supabase.from("clicks").insert({
     link_id: linkId,
     device_type: getDeviceType(),
     referrer: document.referrer || null,
-  })
+  });
 }
 
-export default function ProfileLinks({ links }: { links: Link[] }) {
+export default function ProfileLinks({
+  links,
+  theme,
+}: {
+  links: Link[];
+  theme: Theme;
+}) {
   if (links.length === 0) {
     return (
-      <p className="text-center text-sm text-muted-foreground">
+      <p
+        className="text-center text-sm"
+        style={{ color: theme.buttonBg, opacity: 0.6 }}
+      >
         No links yet.
       </p>
-    )
+    );
   }
 
   return (
     <div className="flex flex-col gap-3">
       {links.map((link) => {
-        const linkType = detectLinkType(link.url)
-        const IconComponent = getLinkIcon(linkType)
-        const iconColor = getLinkColor(linkType)
+        const linkType = detectLinkType(link.url);
+        const IconComponent = getLinkIcon(linkType);
+        const iconColor = getLinkColor(linkType);
 
         return (
           <a
@@ -39,15 +48,17 @@ export default function ProfileLinks({ links }: { links: Link[] }) {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => recordClick(link.id)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-4 text-sm font-medium
-                       transition-colors hover:bg-accent hover:text-accent-foreground"
+            className={`flex w-full items-center justify-center gap-2 px-5 py-4 text-sm font-medium transition-opacity hover:opacity-80 ${theme.buttonRadius} ${theme.fontFamily}`}
+            style={{ background: theme.buttonBg, color: theme.buttonText }}
           >
-            <IconComponent className={`h-5 w-5 ${iconColor}`} />
+            <IconComponent
+              className="h-5 w-5"
+              style={{ color: theme.buttonText }}
+            />
             <span>{link.title}</span>
           </a>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

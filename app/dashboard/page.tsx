@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AddLinkForm from "./AddLinkForm";
 import LinkList from "./LinkList";
-import Link from "next/link";
+import CopyUrlButton from "./CopyUrlButton";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -23,21 +23,27 @@ export default async function DashboardPage() {
     .eq("profile_id", profile?.id)
     .order("sort_order", { ascending: true });
 
+  const profileUrl = `${process.env.APP_BASE_URL}/${profile?.username}`;
+
   return (
     <>
       <div className="flex items-center justify-between my-6">
-        <h1 className="text-xl font-medium">Your Links</h1>
-        <a
-          href={`/${profile?.username}`}
-          target="_blank"
-          className="text-sm text-muted-foreground hover:underline"
-        >
-          View profile ↗
-        </a>
+        <h1 className="text-xl font-medium text-center">Your Links</h1>
+        <div className="flex items-center gap-3">
+          <a
+            href={`/${profile?.username}`}
+            target="_blank"
+            className="text-sm text-muted-foreground hover:underline "
+          >
+            View profile ↗
+          </a>
+          <CopyUrlButton url={profileUrl} />
+        </div>
       </div>
-
-      <AddLinkForm />
-      <LinkList links={links ?? []} />
+      <div className="flex flex-col gap-6">
+        <AddLinkForm />
+        <LinkList links={links ?? []} />
+      </div>
     </>
   );
 }

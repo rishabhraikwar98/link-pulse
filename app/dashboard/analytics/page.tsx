@@ -3,8 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 import { getAnalytics } from '@/lib/analytics'
 import ClicksChart from './ClicksChart'
 import TopLinks from './TopLinks'
+import Link from 'next/link'
 
-export default async function AnalyticsPage() {
+type Props = { searchParams: Promise<{ range?: string }> }
+
+export default async function AnalyticsPage({ searchParams }: Props) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -16,12 +19,40 @@ export default async function AnalyticsPage() {
     .single()
   if (!profile) redirect('/onboarding')
 
-  const { totalClicks, clicksByDay, topLinks, mobilePct } = await getAnalytics(profile.id)
+  const { range } = await searchParams
+  const validRange = range === '7' || range === 'all' ? range : '30'
+
+  const { totalClicks, clicksByDay, topLinks, mobilePct } = await getAnalytics(
+    profile.id,
+    validRange
+  )
 
   return (
-    <>
-      <h1 className="text-xl font-medium">Analytics</h1>
-      <p className="text-sm text-muted-foreground mb-5">Last 30 days</p>
+    <div className="space-y-8">
+
+      {/* Header + range selector */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-medium">Analytics</h1>
+        <div className="flex gap-1 bg-secondary p-1 rounded-lg">
+          {[
+            ['7', '7 days'],
+            ['30', '30 days'],
+            ['all', 'All time'],
+          ].map(([val, label]) => (
+            <Link
+              key={val}
+              href={`/dashboard/analytics?range=${val}`}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                validRange === val
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
+      </div>
 
       {/* Stat cards */}
       <div className="grid grid-cols-3 gap-4">
@@ -39,17 +70,18 @@ export default async function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Clicks per day chart */}
-      <div className="my-8">
+      {/* Clicks over time */}
+      <div>
         <p className="text-sm font-medium mb-4">Clicks over time</p>
         <ClicksChart data={clicksByDay} />
       </div>
 
       {/* Top links */}
-      <div className="my-8">
+      <div>
         <p className="text-sm font-medium mb-4">Top links</p>
         <TopLinks data={topLinks} />
       </div>
-    </>
+
+    </div>
   )
 }

@@ -1,21 +1,7 @@
 "use client";
-import { createClient } from "@/lib/supabase/client";
 import { detectLinkType, getLinkIcon, getLinkColor } from "@/lib/linkIcons";
 import type { Theme } from "@/lib/types/theme";
 type Link = { id: string; title: string; url: string };
-
-function getDeviceType(): string {
-  return /Mobi|Android/i.test(navigator.userAgent) ? "mobile" : "desktop";
-}
-
-async function recordClick(linkId: string) {
-  const supabase = createClient();
-  await supabase.from("clicks").insert({
-    link_id: linkId,
-    device_type: getDeviceType(),
-    referrer: document.referrer || null,
-  });
-}
 
 export default function ProfileLinks({
   links,
@@ -45,7 +31,7 @@ export default function ProfileLinks({
         return (
           <a
             key={link.id}
-            href={link.url}
+            href={`/go/${link.id}`}
             target="_blank"
             rel="noopener noreferrer"
             className={`flex w-full items-center justify-center gap-2 px-5 py-4 text-sm font-medium transition-opacity hover:opacity-80 ${theme.buttonRadius} ${theme.fontFamily}`}

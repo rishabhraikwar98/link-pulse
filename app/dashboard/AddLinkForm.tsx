@@ -18,9 +18,9 @@ export default function AddLinkForm() {
 
   return (
     <Card>
-      <CardContent className="pt-6">
-        <form ref={formRef} action={handleSubmit} className="flex gap-2 flex-col sm:flex-row">
-          <Input name="title" placeholder="Label (e.g. My Blog)" required />
+      <CardContent>
+        <form ref={formRef} action={handleSubmit} className="flex gap-2 flex-col sm:flex-row ">
+          <Input name="title"  placeholder="Label (e.g. My Blog)" required />
           <Input name="url" type="url" placeholder="https://example.com" required />
           <Button type="submit" disabled={isPending} className="shrink-0">
             {isPending ? 'Adding…' : 'Add link'}

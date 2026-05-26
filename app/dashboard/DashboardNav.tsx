@@ -13,7 +13,7 @@ export default function DashboardNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="flex gap-1 mb-8 bg-secondary p-1 rounded-lg w-fit">
+    <nav className="flex gap-1 mb-8 bg-secondary p-1 rounded-lg w-full md:w-fit">
       {links.map(({ href, label}) => {
         const isActive = pathname === href
         return (

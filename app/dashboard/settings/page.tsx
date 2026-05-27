@@ -25,7 +25,7 @@ export default async function SettingsPage() {
   };
 
   return (
-      <div className="max-w-xl mx-auto space-y-12">
+      <div className="max-w-2xl space-y-12">
         <div>
           <h2 className="text-lg font-medium mb-6">Profile</h2>
           <ProfileForm profile={profile} />

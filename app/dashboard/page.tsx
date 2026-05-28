@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AddLinkForm from "./AddLinkForm";
 import LinkList from "./LinkList";
@@ -7,9 +6,7 @@ import CopyUrlButton from "./CopyUrlButton";
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
-  if (!data?.claims) redirect("/login");
-
-  const userId = data.claims.sub;
+  const userId = data!.claims!.sub;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -20,7 +17,7 @@ export default async function DashboardPage() {
   const { data: links } = await supabase
     .from("links")
     .select("id, title, url, is_active, sort_order")
-    .eq("profile_id", profile?.id)
+    .eq("profile_id", userId)
     .order("sort_order", { ascending: true });
 
   const profileUrl = `${process.env.APP_BASE_URL}/${profile?.username}`;

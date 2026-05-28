@@ -9,21 +9,14 @@ type Props = { searchParams: Promise<{ range?: string }> }
 
 export default async function AnalyticsPage({ searchParams }: Props) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', user.id)
-    .single()
-  if (!profile) redirect('/onboarding')
+  const { data } = await supabase.auth.getClaims()
+  const userId = data!.claims!.sub
 
   const { range } = await searchParams
   const validRange = range === '7' || range === 'all' ? range : '30'
 
   const { totalClicks, clicksByDay, topLinks, mobilePct } = await getAnalytics(
-    profile.id,
+    userId,
     validRange
   )
 

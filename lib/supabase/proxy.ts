@@ -38,30 +38,35 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (!user) {
-    if (path.startsWith("/dashboard") || path.startsWith("/onboarding")) {
-      return redirect("/login");
-    }
-    return supabaseResponse;
+// 1. unauthenticated
+if (!user) {
+  if (path.startsWith('/dashboard') || path.startsWith('/onboarding')) {
+    return redirect('/login')
   }
+  return supabaseResponse
+}
 
-  if (path.startsWith("/onboarding")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", user.sub)
-      .single();
-    if (profile) return redirect("/dashboard");
-  }
+// 2. authenticated — bounce off marketing + login
+if (path === '/' || path === '/login') {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.sub)
+    .single()
+  return profile ? redirect('/dashboard') : redirect('/onboarding')
+}
 
-  if (path.startsWith("/dashboard")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", user.sub)
-      .single();
-    if (!profile) return redirect("/onboarding");
-  }
+// 3. authenticated — enforce onboarding
+if (path.startsWith('/dashboard') || path.startsWith('/onboarding')) {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.sub)
+    .single()
 
-  return supabaseResponse;
+  if (!profile && !path.startsWith('/onboarding')) return redirect('/onboarding')
+  if (profile && path.startsWith('/onboarding')) return redirect('/dashboard')
+}
+
+return supabaseResponse;
 }

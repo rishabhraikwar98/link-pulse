@@ -5,6 +5,11 @@ import ClicksChart from './ClicksChart'
 import TopLinks from './TopLinks'
 import Link from 'next/link'
 
+export const metadata = {
+  title: 'Analytics',
+  description: 'View analytics for your links',
+}
+
 type Props = { searchParams: Promise<{ range?: string }> }
 
 export default async function AnalyticsPage({ searchParams }: Props) {

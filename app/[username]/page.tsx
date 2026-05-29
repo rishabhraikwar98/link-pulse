@@ -5,22 +5,30 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { DEFAULT_THEME, type Theme } from "@/lib/types/theme";
 
-type Props = { params: Promise<{ username: string }> };
+type Props = { params: Promise<{ username: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { username } = await params;
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("profiles")
-    .select("display_name, bio")
-    .eq("username", username)
-    .single();
+  const { username } = await params
+  const supabase = await createClient()
 
-  if (!data) return { title: "Not found" };
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('display_name, bio')
+    .eq('username', username)
+    .single()
+
+  if (!profile) return { title: 'Profile not found' }
+
   return {
-    title: data.display_name ?? username,
-    description: data.bio ?? `${username}'s links`,
-  };
+    title: profile.display_name ?? username,
+    description: profile.bio ?? `Check out ${username}'s links on LinkPulse`,
+    openGraph: {
+      title: profile.display_name ?? username,
+      description: profile.bio ?? `Check out ${username}'s links on LinkPulse`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/${username}`,
+      type: 'profile',
+    },
+  }
 }
 
 export default async function ProfilePage({ params }: Props) {

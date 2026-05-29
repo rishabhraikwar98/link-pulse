@@ -3,6 +3,11 @@ import AddLinkForm from "./AddLinkForm";
 import LinkList from "./LinkList";
 import CopyUrlButton from "./CopyUrlButton";
 
+export const metadata = {
+  title: "Links",
+  description: "Manage your links",
+};
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();

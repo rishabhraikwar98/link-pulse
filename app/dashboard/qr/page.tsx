@@ -1,6 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import QRCode from './QRCode'
 
+export const metadata = {
+  title: 'QR Code',
+  description: 'View and share your profile QR code',
+}
+
 export default async function QRPage() {
   const supabase = await createClient()
   const { data } = await supabase.auth.getClaims()

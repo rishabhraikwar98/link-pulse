@@ -3,6 +3,11 @@ import ProfileForm from './ProfileForm'
 import ThemeEditor from './ThemeEditor'
 import { DEFAULT_THEME, type Theme } from '@/lib/types/theme'
 
+export const metadata = {
+  title: 'Settings',
+  description: 'Manage your profile and appearance settings',
+}
+
 export default async function SettingsPage() {
   const supabase = await createClient()
   const { data } = await supabase.auth.getClaims()

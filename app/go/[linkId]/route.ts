@@ -21,8 +21,10 @@ export async function GET(request: NextRequest, { params }: Params) {
 
   const userAgent = request.headers.get('user-agent') ?? ''
   const isMobile = /Mobi|Android|iPhone|iPad/i.test(userAgent)
-  const country = request.headers.get('x-vercel-ip-country')
-  const referrer = request.headers.get('referer') ?? null
+  const country = request.headers.get('x-vercel-ip-country') ?? null
+
+  const rawReferrer = request.headers.get('referer') ?? null
+  const referrer = rawReferrer && rawReferrer.trim() !== '' ? rawReferrer : null
 
   await supabase.from('clicks').insert({
     link_id: linkId,
@@ -31,5 +33,11 @@ export async function GET(request: NextRequest, { params }: Params) {
     referrer,
   })
 
-  return NextResponse.redirect(link.url, { status: 302 })
+  return new NextResponse(null, {
+    status: 302,
+    headers: {
+      Location: link.url,
+      'Referrer-Policy': 'no-referrer-when-downgrade',
+    },
+  })
 }

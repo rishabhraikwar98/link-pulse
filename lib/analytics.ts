@@ -13,7 +13,7 @@ export async function getAnalytics(
     .eq('profile_id', profileId)
 
   if (!links || links.length === 0) {
-    return { totalClicks: 0, clicksByDay: [], topLinks: [], mobilePct: 0 }
+    return { totalClicks: 0, clicksByDay: [], topLinks: [], topCountries: [], mobilePct: 0 }
   }
 
   const linkIds = links.map((l) => l.id)
@@ -21,7 +21,7 @@ export async function getAnalytics(
 
   let query = supabase
     .from('clicks')
-    .select('clicked_at, device_type, link_id')
+    .select('clicked_at, device_type, link_id, country')
     .in('link_id', linkIds)
 
   if (range !== 'all') {
@@ -34,6 +34,7 @@ export async function getAnalytics(
   const safeClicks = clicks ?? []
   const totalClicks = safeClicks.length
 
+  // Clicks per day
   const clicksByDay = Object.entries(
     safeClicks.reduce<Record<string, number>>((acc, c) => {
       const day = format(new Date(c.clicked_at), 'MMM d')
@@ -44,6 +45,7 @@ export async function getAnalytics(
     .map(([date, clicks]) => ({ date, clicks }))
     .slice(-14)
 
+  // Top links
   const topLinks = Object.entries(
     safeClicks.reduce<Record<string, number>>((acc, c) => {
       const title = linkMap[c.link_id] ?? 'Unknown'
@@ -55,9 +57,24 @@ export async function getAnalytics(
     .sort((a, b) => b.clicks - a.clicks)
     .slice(0, 5)
 
+  // Top countries
+  const topCountries = Object.entries(
+    safeClicks
+      .filter((c) => c.country)
+      .reduce<Record<string, number>>((acc, c) => {
+        const country = c.country!
+        acc[country] = (acc[country] ?? 0) + 1
+        return acc
+      }, {})
+  )
+    .map(([country, clicks]) => ({ country, clicks }))
+    .sort((a, b) => b.clicks - a.clicks)
+    .slice(0, 5)
+
+  // Device split
   const mobileCount = safeClicks.filter((c) => c.device_type === 'mobile').length
   const mobilePct =
     totalClicks === 0 ? 0 : Math.round((mobileCount / totalClicks) * 100)
 
-  return { totalClicks, clicksByDay, topLinks, mobilePct }
+  return { totalClicks, clicksByDay, topLinks, topCountries, mobilePct }
 }

@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LinkPulse
 
-## Getting Started
+A fast, minimal link-in-bio tool with click analytics, custom themes, and QR codes. Built with Next.js 15 and Supabase.
 
-First, run the development server:
+**Live:** [LinkPulse](https://link-pulse-iota.vercel.app)
+
+---
+
+## Features
+
+- **Magic link auth** — passwordless sign-in via email
+- **Public profile page** — shareable at `yourdomain.com/username`
+- **Link manager** — add, hide, delete, and drag-to-reorder links
+- **Click analytics** — track clicks by day, country, device, and referrer
+- **Custom themes** — 12 minimal presets with fonts, colors, and button shapes
+- **QR code** — generate and download a PNG for your profile
+- **Open Graph images** — dynamic per-profile preview cards for social sharing
+- **Row-level security** — every query protected by Supabase RLS
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Database + Auth | Supabase |
+| UI | Shadcn UI + Tailwind CSS |
+| Charts | Recharts |
+| Drag & drop | dnd-kit |
+| QR code | qrcode.react |
+| Deployment | Vercel |
+
+---
+
+## Local setup
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/rishabhraikwar98/link-pulse.git
+cd link-pulse
+npm install
+```
+
+### 2. Environment variables
+
+Copy the example env file and fill in your values:
+
+```bash
+cp .env.local.example .env.local
+```
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 3. Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
+Deployed on Vercel. Add your environment variables to the Vercel project settings and push to deploy.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Issues and PRs are welcome.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
